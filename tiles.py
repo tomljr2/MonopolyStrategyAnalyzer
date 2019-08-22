@@ -18,6 +18,9 @@ class Property:
       self.rent4 = rent4
       self.rent5 = rent5
       self.mortgage = mortgage
+      self.mortgaged = False
+
+      self.timesLanded = 0
 
    owner=None
 
@@ -28,6 +31,9 @@ class Railroad:
       self.cost = cost
       self.rent = rent
       self.mortgage = mortgage
+      self.mortgaged = False
+
+      self.timesLanded = 0
 
    owner=None
 
@@ -37,16 +43,23 @@ class Utility:
       self.name = name
       self.cost = cost
       self.mortgage = mortgage
+      self.mortgaged = False
+
+      self.timesLanded = 0
 
    owner=None
 
 class Tax:
-   def __init__(self,id,name,cost):
+   def __init__(self,id,name,mortgage):
       self.id = id
       self.name = name
-      self.cost = cost
+      self.mortgage = mortgage
+
+      self.timesLanded = 0
 
 class Other:
    def __init__(self,id,name):
       self.id = id
       self.name = name
+
+      self.timesLanded = 0

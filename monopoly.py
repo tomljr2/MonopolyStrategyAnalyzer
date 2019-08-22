@@ -8,6 +8,7 @@ class Monopoly:
    def __init__(self,players):
       self.players=players
       self.__currentPlayer__=0
+      self.__freeParking__=0
       self.board = [
                Other(0,'Go'),									\
                Property(1,'Mediterranean Avenue',60,'brown',2,10,30,90,160,250,30),		\
@@ -59,27 +60,82 @@ class Monopoly:
 
    def takeTurn(self):
       player=self.players[self.__currentPlayer__]
+      oldPos = player.getPos()
 
       # Roll the dice
       roll=self.__rollDice__()
 
       # Move the current player
       player.move(roll[0]+roll[1])
+      self.board[player.getPos()].timesLanded+=1
 
-      takeAction(player)
+      # Money for passing GO
+      if player.getPos < oldPos:
+          player.addMoney(200)
+
+      self.__takeAction__(player)
 
       # Set the current player to the next player
       self.__currentPlayer__=(self.__currentPlayer__+1)%len(self.players)
 
    def __takeAction__(self,player):
-      tile = board[player.getPos()]
+      tile = self.board[player.getPos()]
       if(isinstance(tile,Property)):
-         #do something
+         if tile.owner != None:
+            self.pay(player,tile,owner)
+         elif player.getMoney() + \
+              self.__getTotalMortgageValue__(player) < tile.cost:
+            # Start auction
+            pass
+         else:
+            # Need option to buy or start auction
+            pass
       elif(isinstance(tile,Tax)):
-         #do another thing
+         self.pay(player,tile,None)
       elif(isinstance(tile,Railroad)):
-         #do thing
+         if tile.owner != None:
+            self.pay(player,tile,owner)
+         elif player.getMoney() + \
+              self.__getTotalMortgageValue__(player) < tile.cost:
+            # Start auction
+            pass
+         else:
+            # Need option to buy or start auction
+            pass
       elif(isinstance(tile,Utility)):
-         #do something else
+         if tile.owner != None:
+            self.pay(player,tile,owner)
+         elif player.getMoney() + \
+              self.__getTotalMortgageValue__(player) < tile.cost:
+            # Start auction
+            pass
+         else:
+            # Need option to buy or start auction
+            pass
       else:
-         #do more thing
+         pass
+
+   # Find the combined values of the properties that the player owns
+   def __getTotalMortgageValue__(self,player):
+      value = 0
+      for prop in player.getProperties():
+         value += prop.mortgage
+      return value
+
+   def __resetPropertyOwner__(self,player,newOwner):
+      for prop in player.getProperties():
+         prop.owner = newOwner
+         if newOwner != None:
+            newOwner.addProperty(prop)
+
+   def __pay__(self,player,tile,owner):
+         player.addMoney(-(tile.mortgage))
+         if player.getMoney() < 0:
+            if len(player.getProperties) == 0 or \
+               self.__getTotalMortgageValue__(player) < abs(player.getMoney):
+               print(player.name + " has gone bankrupt.")
+               self.__resetPropertyOwner__(player,owner)
+               del self.players[self.__currentPlayer__]
+            else:
+               # Need to mortgage properties to pay
+               pass
