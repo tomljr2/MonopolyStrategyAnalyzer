@@ -1,4 +1,5 @@
 from tiles import *
+from strategy import *
 import random
 
 # Create a board instance in the Monopoly class containing all the necessary information on
@@ -52,8 +53,11 @@ class Monopoly:
                Property(39,'Boardwalk',400,'blue',50,200,600,1400,1700,2000,200)		\
               ]
 
-#   def simGame():
-      # Lots to do here
+   def simGame(self):
+      winner = None
+      while winner == None:
+         continue #TODO
+      return winner
 
    def __rollDice__(self):
       return [random.randint(1,7),random.randint(1,7)]
@@ -83,44 +87,46 @@ class Monopoly:
       if(isinstance(tile,Property)):
          if tile.owner != None:
             self.pay(player,tile,owner)
-         elif player.getMoney() + \
-              self.__getTotalMortgageValue__(player) < tile.cost:
-            # Start auction
+         elif player.getMoney() + player.propertyValue < tile.cost:
+            # Start auction TODO
             pass
          else:
-            # Need option to buy or start auction
+            if(player.shouldIBuy()):
+               # pay with money and/or buy mortgaging properties TODO
+               player.propertyValue+=tile.mortgage
+               player.properties.append(tile)
             pass
+
       elif(isinstance(tile,Tax)):
          self.pay(player,tile,None)
+
       elif(isinstance(tile,Railroad)):
          if tile.owner != None:
             self.pay(player,tile,owner)
-         elif player.getMoney() + \
-              self.__getTotalMortgageValue__(player) < tile.cost:
-            # Start auction
+         elif player.getMoney() + player.propertyValue < tile.cost:
+            # Start auction TODO
             pass
          else:
-            # Need option to buy or start auction
+            if(player.shouldIBuy()):
+               # pay with money and/or buy mortgaging properties TODO
+               player.propertyValue+=tile.mortgage
+               player.properties.append(tile)
             pass
+
       elif(isinstance(tile,Utility)):
          if tile.owner != None:
             self.pay(player,tile,owner)
-         elif player.getMoney() + \
-              self.__getTotalMortgageValue__(player) < tile.cost:
-            # Start auction
+         elif player.getMoney() + player.propertyValue < tile.cost:
+            # Start auction TODO
             pass
          else:
-            # Need option to buy or start auction
+            if(player.shouldIBuy()):
+               # pay with money and/or buy mortgaging properties TODO
+               player.propertyValue+=tile.mortgage
+               player.properties.append(tile)
             pass
       else:
          pass
-
-   # Find the combined values of the properties that the player owns
-   def __getTotalMortgageValue__(self,player):
-      value = 0
-      for prop in player.getProperties():
-         value += prop.mortgage
-      return value
 
    def __resetPropertyOwner__(self,player,newOwner):
       for prop in player.getProperties():
@@ -137,5 +143,5 @@ class Monopoly:
                self.__resetPropertyOwner__(player,owner)
                del self.players[self.__currentPlayer__]
             else:
-               # Need to mortgage properties to pay
+               # Need to mortgage properties to pay TODO
                pass

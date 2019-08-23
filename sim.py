@@ -10,4 +10,4 @@ for x in range(NUMPLAYERS):
 
 # Create an instance of the game
 mp=Monopoly(players)
-mp.takeTurn()
+mp.simGame()
